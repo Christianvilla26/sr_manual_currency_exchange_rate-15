@@ -150,7 +150,7 @@ class AccountMove(models.Model):
                     taxes_map_entry['tax_line'].tax_base_amount = tax_base_amount
                 continue
             if self.apply_manual_currency_exchange:
-                balance = taxes_map_entry['amount'] / self.manual_currency_exchange_rate
+                balance = taxes_map_entry['amount'] * self.manual_currency_exchange_rate
             else:
                 balance = currency._convert(
                     taxes_map_entry['amount'],
@@ -214,7 +214,7 @@ class AccountMoveLine(models.Model):
 
         amount_currency = price_subtotal * sign
         if self.move_id.apply_manual_currency_exchange:
-            balance = amount_currency / self.move_id.manual_currency_exchange_rate
+            balance = amount_currency * self.move_id.manual_currency_exchange_rate
         else:
             balance = currency._convert(amount_currency, company.currency_id, company,
                                         date or fields.Date.context_today(self))
@@ -258,7 +258,7 @@ class AccountMoveLine(models.Model):
         for line in self:
             company = line.move_id.company_id
             if line.move_id.apply_manual_currency_exchange:
-                balance = line.amount_currency / line.move_id.manual_currency_exchange_rate
+                balance = line.amount_currency * line.move_id.manual_currency_exchange_rate
             else:
                 balance = line.currency_id._convert(line.amount_currency, company.currency_id, company,
                                                     line.move_id.date)
